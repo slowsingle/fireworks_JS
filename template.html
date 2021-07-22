@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>firework</title>
+</head>
+
+<body>
+  <canvas id="firework"></canvas>
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.min.js"></script>
+
+<script>
+  let fw;  // 花火の情報（インスタンス）を保存しておく変数
+
+  // 花火の状態を定義する
+  const RISING = 1;  // 花火が上昇している
+  const EXPLOSION = 2;  // 花火が爆発する
+  const FINISHED = 3;  // 花火が消えて見えなくなる
+
+  // ページを開いてから最初に1回だけ呼ばれる関数。最初にすべき設定などをここに書く
+  function setup() {
+    // キャンバスの設定をする
+    let canvas = document.getElementById('firework');
+    let ctx = canvas.getContext('2d');
+    canvas = createCanvas(480, 520);  // キャンバスのサイズを480x520にする
+    canvas.position(0, 0);  // キャンバスの位置を決める。(0, 0)だと左上に配置される
+    canvas.style("z-index", "-1");  // これから描画する花火が手前に来るように、キャンバスを一番後方に置く
+    colorMode(RGB);  // 色を赤・緑・青の3原色の組み合わせで表現する
+    frameRate(60);  // 1秒間に画面が60回更新されるようにする
+  }
+
+  // 画面を更新するたびに呼ばれる関数。アニメの1コマをどう描画するかを決める感じ
+  function draw() {
+    // 何もしないと真っ白な画面になるので、背景も含めてどう描画するかを指定する必要がある
+    // TODO: 背景を黒にする
+    
+    noStroke();  // 輪郭は描かない
+    
+    // 花火の打ち上げをする
+    // 最初は変数fwには何も代入されていないので、undefined（未定義）となる
+    // この未定義のときと、花火が打ちあがりきって消えたときは、新しい花火を再度打ち上げる必要があるので、
+    // 新しい花火のインスタンスを生成する
+    if ( typeof fw === 'undefined' || fw.status === FINISHED) {
+      // TODO: 出現位置をランダムにして、花火のインスタンスを生成する
+    }
+    else {
+      // TODO: 花火の描画をする
+    }
+  }
+
+  class FireWork {
+    // 花火のインスタンスを生成するときに最初に1回だけ呼ばれる関数
+    constructor(x) {
+      // 打ち上がる花火の位置
+      this.x = x;
+      this.y = 520;
+      
+      // 花火の大きさ
+      this.fireScale = 8;
+
+      // 打ち上がる速さ
+      this.velocity_y = 3;
+      
+      // 爆発時の中心からの距離
+      this.distance_from_center = 0;
+      
+      // 花火の状態
+      this.status = RISING;
+    }
+    
+    fire() {
+      let c = color(255, 255, 0);  // 花火の色を指定する
+      fill(c);  // 何か描画する際に、内側も色を塗る設定にする
+    
+      // 花火は一定の高さまで上昇し、その後爆発する
+      // 爆発してしばらくしたら、花火は消える
+      if (this.y > 150) {
+        // TODO: 花火を打ち上げる処理
+
+        this.status = RISING;
+      }
+      else if (this.distance_from_center < 100) {
+        // TODO: 花火を爆発させる処理
+
+        this.status = EXPLOSION;
+      }
+      else{
+        // 花火が消えてなくなる処理。何もしなければ何も描画されない（＝花火が見えなくなる）ので、
+        // 書くべきプログラムはほとんどない
+        this.status = FINISHED;
+      }
+    }
+  }
+
+  // 花火の玉の数(num_fireball)と中心からの距離(distance_from_center)、
+  // そして、何番目の花火の玉か(i_fireball)、という情報をもとに移動量(move_x, move_y)を計算する
+  function calculate_move(i_fireball, num_fireball, distance_from_center) {
+    let rad = 2 * Math.PI * i_fireball / num_fireball;
+    let move_x = Math.cos(rad) * distance_from_center;
+    let move_y = Math.sin(rad) * distance_from_center;
+    return [move_x, move_y]
+  }
+</script>
+
+</html>
